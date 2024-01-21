@@ -4,16 +4,18 @@
 in
   {
     isDepsBuild ? false,
-    workspacePackageName ? null,
-    useTargetNaming ? true,
+    workspaceTargetName ? null,
+    isLibTarget ? false,
     ...
   } @ args: let
-    pnameWorkspace = "-${workspacePackageName}";
-    cargoExtraArgWorkspace = "--package ${workspacePackageName}";
-    targetName = optionalString useTargetNaming args.CARGO_BUILD_TARGET or "";
-    depsFlag = optionalString true "-deps";
+    extraTargetFlag =
+      if isLibTarget
+      then "lib"
+      else "bin";
+    cargoExtraArgWorkspace = "--${extraTargetFlag} ${workspaceTargetName}";
+    depsFlag = optionalString isDepsBuild "${args.pname or ""}-${workspaceTargetName}-deps";
   in
-    optionalAttrs (workspacePackageName != null) {
-      pnameSuffix = "${targetName}${pnameWorkspace}${depsFlag}${args.pnameSuffix or ""}";
+    optionalAttrs (workspaceTargetName != null) {
+      pname = "${workspaceTargetName}${depsFlag}";
       cargoExtraArgs = "${args.cargoExtraArgs or ""}${cargoExtraArgWorkspace}";
     }

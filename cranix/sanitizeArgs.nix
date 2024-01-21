@@ -3,6 +3,6 @@ builtins.removeAttrs args [
   "useCranelift"
   "useMold"
   "isDepsBuild"
-  "useTargetNaming"
-  "workspacePackageName"
+  "isLibTarget"
+  "workspaceTargetName"
 ]
