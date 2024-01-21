@@ -6,7 +6,7 @@ Cranix introduces new integrations to the Crane APIs.
 
 - **Mold**: Enable by setting `useMold = true`.
 - **Cranelift**: Enable by setting `useCranelift = true`.
-- **Workspace Package**: To create your own `Workspace Package` derivation, simply add `workspacePackageName = "myPackageName"`. Cranix handles the rest 🦀.
+- **Workspace Package**: To create your own `Workspace Package` derivation, simply add `workspaceTargetName = "myBinName"`. Cranix handles the rest 🦀.
 
 ## APIs
 
@@ -21,6 +21,21 @@ Cranix introduces new integrations to the Crane APIs.
 
 Feel free to add `CARGO_{TRIPLE|COMMAND}_RUSTFLAG` or `nativeBuildInputs`. They won't break anything in the new APIs.
 
+## Custom attrs
+
+- **useCranelift**
+  - Description: Enable Mold backend for all build phases.
+  - Type: Boolean
+- **useMold**
+  - Description: Enable Mold backend for all build phases.
+  - Type: Boolean
+- **isLibTarget**
+  - Description: Build defined lib in workspace (For future implementations).
+  - Type: Boolean
+- **workspaceTargetName**
+  - Description: Workspace target name (Build bin by default).
+  - Type: String
+
 ## How to use
 
 ```nix
@@ -30,7 +45,7 @@ Feel free to add `CARGO_{TRIPLE|COMMAND}_RUSTFLAG` or `nativeBuildInputs`. They 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-utils.url = "github:numtide/flake-utils";
     crane.url = "github:ipetkov/crane";
-    cranix.url = "git+file:/home/lemi/cranix";
+    cranix.url = "github:Lemin-n/cranix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     fenix.url = "github:nix-community/fenix/monthly";
   };
