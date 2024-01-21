@@ -13,20 +13,22 @@
   sanitizeArgs = callPackage ./sanitizeArgs.nix {};
 in
   args: let
-    memoizedArgs =
+    attrs =
       (sanitizeArgs args)
       // (commonWindowsArgs args)
       // (workspaceNaming args)
       // (rustFlags args);
   in
     prev.buildPackage (
-      memoizedArgs
+      attrs
       // {
         cargoArtifacts =
           args.cargoArtifacts
-          or (buildWindowsDepsOnly (memoizedArgs
+          or (buildWindowsDepsOnly (
+            args
             // {
               installPhase = "prepareAndInstallCargoArtifactsDir";
-            }));
+            }
+          ));
       }
     )

@@ -13,19 +13,19 @@
   sanitizeArgs = callPackage ./sanitizeArgs.nix {};
 in
   args: let
-    memoizedArgs =
+    attrs =
       (sanitizeArgs args)
       // commonLinuxArgs
       // (workspaceNaming args)
       // (rustFlags args);
   in
     prev.buildPackage (
-      memoizedArgs
+      attrs
       // {
         cargoArtifacts =
           args.cargoArtifacts
           or (buildLinuxDepsOnly (
-            memoizedArgs
+            args
             // {
               installPhase = "prepareAndInstallCargoArtifactsDir";
             }

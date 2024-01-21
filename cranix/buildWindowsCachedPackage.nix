@@ -7,6 +7,6 @@
   pkg = buildWindowsPackage (args // {cargoArtifacts = deps;});
   app = {
     type = "app";
-    drv = "${pkg}${pkg.passthru.exePath or "/bin/${pkg.pname or pkg.name}"}";
+    program = "${pkg}${pkg.passthru.exePath or "/bin/${pkg.pname or pkg.name}"}";
   };
 }
