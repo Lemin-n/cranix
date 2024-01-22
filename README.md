@@ -12,7 +12,8 @@ Cranix introduces new integrations to the Crane APIs.
 
 - `craneLib.build{Sys}DepsOnly`: A helper for `craneLib.buildDepsOnly`, including all previously explained integrations.
 - `craneLib.build{Sys}Package`: A helper for `craneLib.buildPackageOnly`, including all previously explained integrations.
-- `craneLib.build{Sys}CachedPackage`: Packs your system dependencies, package and `nix run` app. You're allowed to add `args.cargoArtifacts`.
+- `craneLib.build{Sys}Bundle`: Packs your system dependencies, package and `nix run` app. You're allowed to add `args.cargoArtifacts`.
+- `craneLib.buildCranix{DepsOnly,Package,Bundle}`: Make your own `crane` build process with `cranix` features.
 
 ## Supported Systems
 
@@ -79,23 +80,25 @@ Feel free to add `CARGO_{TRIPLE|COMMAND}_RUSTFLAG` or `nativeBuildInputs`. They 
           doCheck = false;
         };
         linuxApp =
-          cranixLib.buildLinuxCachedPackage (commonArg //{
+          cranixLib.buildLinuxBundle (commonArg //{
           useMold = true;
           useCranelift = true;
         });
         windowsApp =
-          cranixLib.buildWindowsCachedPackage commonArg;
+          cranixLib.buildWindowsBundle commonArg;
       in {
         # nix build
-        packages = {
+        packages = rec {
           linux = linuxApp.pkg;
-          windows = windowsApp.pkg
+          windows = windowsApp.pkg;
+          default = linux;
         };
 
         # nix run
-        app {
+        app rec {
           linux = linuxApp.app;
           windows = windowsApp.app;
+          default = linux;
         }
 
         # nix develop
