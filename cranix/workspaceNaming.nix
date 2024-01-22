@@ -1,21 +1,26 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  prev,
+  ...
+}: let
   inherit (pkgs.lib.strings) optionalString;
   inherit (pkgs.lib.attrsets) optionalAttrs;
 in
   {
-    isDepsBuild ? false,
     workspaceTargetName ? null,
     isLibTarget ? false,
     ...
-  } @ args: let
+  } @ args: isDepsBuild: let
     extraTargetFlag =
-      if isLibTarget
+      if args.isLibTarget or isLibTarget
       then "lib"
       else "bin";
-    cargoExtraArgWorkspace = "--${extraTargetFlag} ${workspaceTargetName}";
-    depsFlag = optionalString isDepsBuild "${args.pname or ""}-${workspaceTargetName}-deps";
+    crateName = prev.crateNameFromCargoToml args;
+    cargoExtraArgWorkspace = "--${extraTargetFlag} ${args.workspaceTargetName}";
+    depsFlag = optionalString isDepsBuild "-${crateName.pname}-deps";
   in
-    optionalAttrs (workspaceTargetName != null) {
-      pname = "${workspaceTargetName}${depsFlag}";
+    optionalAttrs (builtins.typeOf (args.workspaceTargetName or workspaceTargetName) != "null") {
+      pnameSuffix = depsFlag;
+      pname = "${args.workspaceTargetName}";
       cargoExtraArgs = "${args.cargoExtraArgs or ""}${cargoExtraArgWorkspace}";
     }
