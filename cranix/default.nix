@@ -31,5 +31,8 @@ in
     buildCranixPackage = buildCranix {
       buildPackageDerivation = true;
     };
-    buildCranixBundle = _buildCranixBundle buildCranixDepsOnly buildCranixPackage;
+    buildCranixBundle = _buildCranixBundle {
+      buildDepsOnly = buildCranixDepsOnly;
+      buildPackage = buildCranixPackage;
+    };
   }
